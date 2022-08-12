@@ -6,6 +6,7 @@
 
 #define LEN 20
 #define WID 50
+#define TIME 60
 
 int i = 0, j = 0;
 char level [LEN][WID];
@@ -14,11 +15,15 @@ struct player {
 
   int x;
   int y;
-  char character;
+  //char body[HBODY][LBODY];
 
 };
 
+void destroyPlayer (struct player * Player, char level [LEN][WID]);
+void drawPlayer (struct player * Player, char level [LEN][WID]);
 void move (struct player * Player, char level[LEN][WID]);
+void Timer (void);
+
 
 
 int main (void) {
@@ -26,7 +31,8 @@ int main (void) {
   FILE * fp = fopen ("level1.txt", "r");
 
   struct player Player;
-  Player.character = '0';
+
+  char body[HBODY][LBODY] = {{' ', '0', ' '}, {' ', '0', ' '}, {' ', '0', ' '}, {'0', ' ', ' '}};
 
   char ch;
 
@@ -62,6 +68,7 @@ int main (void) {
     }
   }
 
+
   struct player * pt;
 
   while (check == 1) {
@@ -86,23 +93,75 @@ int main (void) {
   return 0;
 }
 
-void move (struct player * Player, char level[LEN][WID]) {
+void move (struct player * Player, char level [LEN][WID]) {
 
-  level[Player->y][Player->x] = ' ';
+  destroyPlayer (Player, level);
 
-  if (GetKeyState ('D') < 0 && level[Player->y][Player->x + 1] != '#')
-    Player->x ++;
+  if (GetKeyState ('D') < 0
+    && level[Player->y][Player->x + 2] != '#'\
+    && level[Player->y + 1][Player->x + 2] != '#'\
+    && level[Player->y + 2][Player->x + 2] != '#'\
+    && level[Player->y - 1][Player->x + 1] != '#')
+      Player->x ++;
 
-  if (GetKeyState ('A') < 0 && level[Player->y][Player->x - 1] != '#')
-    Player->x --;
+  if (GetKeyState ('A') < 0
+    && level[Player->y][Player->x - 2] != '#'\
+    && level[Player->y + 1][Player->x - 2] != '#'\
+    && level[Player->y + 2][Player->x - 2] != '#'\
+    && level[Player->y - 1][Player->x - 1] != '#')
+      Player->x --;
 
-  if (GetKeyState ('S') < 0 && level[Player->y + 1][Player->x] != '#')
-    Player->y ++;
+  if (GetKeyState ('S') < 0
+    && level[Player->y + 3][Player->x] != '#'\
+    && level[Player->y + 3][Player->x + 1] != '#'\
+    && level[Player->y + 3][Player->x - 1] != '#')
+      Player->y ++;
 
-  if (GetKeyState ('W') < 0 && level[Player->y - 1][Player->x] != '#')
-    Player->y --;
+  if (GetKeyState ('W') < 0
+    && level[Player->y - 2][Player->x] != '#'\
+    && level[Player->y - 1][Player->x + 1] != '#'\
+    && level[Player->y - 1][Player->x - 1] != '#')
+      Player->y --;
+
+  drawPlayer (Player, level);
+
+}
+
+void drawPlayer (struct player * Player, char level [LEN][WID]) {
 
   level[Player->y][Player->x] = '0';
+  level[Player->y][Player->x + 1] = '0';
+  level[Player->y][Player->x - 1] = '0';
+  level[Player->y - 1][Player->x] = '0';
+  level[Player->y + 1][Player->x] = '0';
+  level[Player->y + 2][Player->x + 1] = '0';
+  level[Player->y + 2][Player->x - 1] = '0';
+
+}
+
+void destroyPlayer (struct player * Player, char level [LEN][WID]) {
+
+  level[Player->y][Player->x] = ' ';
+  level[Player->y][Player->x + 1] = ' ';
+  level[Player->y][Player->x - 1] = ' ';
+  level[Player->y - 1][Player->x] = ' ';
+  level[Player->y + 1][Player->x] = ' ';
+  level[Player->y + 2][Player->x + 1] = ' ';
+  level[Player->y + 2][Player->x - 1] = ' ';
+
+}
+
+void Timer (void) {
+
+  i = TIME;
+
+  while (i > 0) {
+
+    printf ("%d\r", i);
+    Sleep (1000);
+    i--;
+
+  }
 
 }
 
