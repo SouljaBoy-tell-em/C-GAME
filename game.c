@@ -18,14 +18,7 @@ struct player {
 
 };
 
-struct coords {
-
-  int X;
-  int Y;
-
-};
-
-void move (struct player Player);
+void move (struct player * Player, char level[LEN][WID]);
 
 
 int main (void) {
@@ -56,13 +49,12 @@ int main (void) {
   }
 
 
-  int xo = 5;
-  int yo = 10;
+  int yo = 5;
+  int xo = 10;
   int check = 1;
 
   Player.x = xo;
   Player.y = yo;
-  level[xo][yo] = Player.character;
 
   for (i = 0; i < LEN; i++) {
     for (j = 0; j < WID; j++) {
@@ -70,6 +62,7 @@ int main (void) {
     }
   }
 
+  struct player * pt;
 
   while (check == 1) {
 
@@ -80,42 +73,45 @@ int main (void) {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     SetConsoleCursorPosition(hConsole, position);
 
-    level[Player.x][Player.y] = ' ';
+    move (&Player, level);
 
-    if (GetKeyState ('D') < 0)
-      Player.y ++;
-    if (GetKeyState ('A') < 0)
-      Player.y --;
-    if (GetKeyState ('S') < 0)
-      Player.x ++;
-    if (GetKeyState ('W') < 0)
-      Player.x --;
-
-    level[Player.x][Player.y] = '0';
-
-    for (i = 0; i < LEN; i++) {
-      for (j = 0; j < WID; j++) {
+    for (i = 0; i < LEN; i++)
+      for (j = 0; j < WID; j++)
         putchar (level[i][j]);
-      }
-    }
 
-
-    Sleep (50);
+    Sleep (30);
 
   }
 
   return 0;
 }
 
-void move (struct player Player) {
+void move (struct player * Player, char level[LEN][WID]) {
 
-  if (GetKeyState ('D') < 0)
-    Player.x ++;
-  if (GetKeyState ('A') < 0)
-    Player.x --;
-  if (GetKeyState ('S') < 0)
-    Player.y --;
-  if (GetKeyState ('W') < 0)
-    Player.y ++;
+  level[Player->y][Player->x] = ' ';
+
+  if (GetKeyState ('D') < 0 && level[Player->y][Player->x + 1] != '#')
+    Player->x ++;
+
+  if (GetKeyState ('A') < 0 && level[Player->y][Player->x - 1] != '#')
+    Player->x --;
+
+  if (GetKeyState ('S') < 0 && level[Player->y + 1][Player->x] != '#')
+    Player->y ++;
+
+  if (GetKeyState ('W') < 0 && level[Player->y - 1][Player->x] != '#')
+    Player->y --;
+
+  level[Player->y][Player->x] = '0';
 
 }
+
+/*
+
+ 0
+000
+ 0
+0 0
+
+
+*/
