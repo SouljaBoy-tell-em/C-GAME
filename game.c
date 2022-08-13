@@ -10,6 +10,7 @@
 #define FPS 50
 
 int i = 0, j = 0;
+static unsigned short multiplicityMinutes = 1;
 char level [LEN][WID];
 
 struct player {
@@ -21,10 +22,11 @@ struct player {
 };
 
 void cursorStart (void);
-void destroyPlayer (struct player * Player, char level [LEN][WID]);
-void drawPlayer (struct player * Player, char level [LEN][WID]);
-void move (struct player * Player, char level[LEN][WID]);
-void Timer (char * numClock1, char * numClock2);
+void destroyPlayer (struct player *, char [LEN][WID]);
+void drawPlayer (struct player *, char [LEN][WID]);
+void fps (char *, char *);
+void move (struct player *, char [LEN][WID]);
+void Timer (long, char *, char *);
 
 
 
@@ -67,7 +69,7 @@ int main (void) {
   Player.y = yo;
 
 
-  long time = 0, a = 1;
+  long time = 0;
 
 
   while (check == 1) {
@@ -86,16 +88,14 @@ int main (void) {
     Sleep (FPS);
     time += FPS;
 
-    if (time >= 1000 * a) {
-      Timer (&level[21][8], &level[21][9]);
-      a++;
-    }
+    Timer (time, &level[21][8], &level[21][9]);
 
 
   }
 
   return 0;
 }
+
 
 void move (struct player * Player, char level [LEN][WID]) {
 
@@ -165,7 +165,7 @@ void cursorStart (void) {
 
 int iTime = 5, jTime = 9;
 
-void Timer (char * numClock1, char * numClock2) {
+void fps (char * numClock1, char * numClock2) {
 
 
   if (iTime >= 0) {
@@ -190,6 +190,18 @@ void Timer (char * numClock1, char * numClock2) {
     }
 
   }
+
+}
+
+void Timer (long time, char * numClock1, char * numClock2) {
+
+  if (time >= 1000 * multiplicityMinutes) {
+
+    fps (numClock1, numClock2);
+    multiplicityMinutes++;
+
+  }
+
 
 }
 
