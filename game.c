@@ -24,7 +24,7 @@ struct player {
 void cursorStart (void);
 void destroyPlayer (struct player *, char [LEN][WID]);
 void drawPlayer (struct player *, char [LEN][WID]);
-void fps (char *, char *);
+void fpsTime (char *, char *);
 void move (struct player *, char [LEN][WID]);
 void Timer (long, char *, char *);
 
@@ -133,13 +133,13 @@ void move (struct player * Player, char level [LEN][WID]) {
 
 void drawPlayer (struct player * Player, char level [LEN][WID]) {
 
-  level[Player->y][Player->x] = '0';
-  level[Player->y][Player->x + 1] = '0';
-  level[Player->y][Player->x - 1] = '0';
+  level[Player->y][Player->x] = '+';
+  level[Player->y][Player->x + 1] = '-';
+  level[Player->y][Player->x - 1] = '-';
   level[Player->y - 1][Player->x] = '0';
-  level[Player->y + 1][Player->x] = '0';
-  level[Player->y + 2][Player->x + 1] = '0';
-  level[Player->y + 2][Player->x - 1] = '0';
+  level[Player->y + 1][Player->x] = '|';
+  level[Player->y + 2][Player->x + 1] = '\\';
+  level[Player->y + 2][Player->x - 1] = '/';
 
 }
 
@@ -165,7 +165,7 @@ void cursorStart (void) {
 
 int iTime = 5, jTime = 9;
 
-void fps (char * numClock1, char * numClock2) {
+void fpsTime (char * numClock1, char * numClock2) {
 
 
   if (iTime >= 0) {
@@ -197,7 +197,7 @@ void Timer (long time, char * numClock1, char * numClock2) {
 
   if (time >= 1000 * multiplicityMinutes) {
 
-    fps (numClock1, numClock2);
+    fpsTime (numClock1, numClock2);
     multiplicityMinutes++;
 
   }
@@ -208,9 +208,9 @@ void Timer (long time, char * numClock1, char * numClock2) {
 /*
 
  0
-000
- 0
-0 0
+-+-
+ |
+/ \
 
 
 */
