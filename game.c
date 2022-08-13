@@ -4,9 +4,10 @@
 #include <stdbool.h>
 #include <windows.h>
 
-#define LEN 20
+#define LEN 25
 #define WID 50
 #define TIME 60
+#define FPS 50
 
 int i = 0, j = 0;
 char level [LEN][WID];
@@ -19,10 +20,11 @@ struct player {
 
 };
 
+void cursorStart (void);
 void destroyPlayer (struct player * Player, char level [LEN][WID]);
 void drawPlayer (struct player * Player, char level [LEN][WID]);
 void move (struct player * Player, char level[LEN][WID]);
-void Timer (void);
+void Timer (char * numClock1, char * numClock2);
 
 
 
@@ -31,8 +33,6 @@ int main (void) {
   FILE * fp = fopen ("level1.txt", "r");
 
   struct player Player;
-
-  char body[HBODY][LBODY] = {{' ', '0', ' '}, {' ', '0', ' '}, {' ', '0', ' '}, {'0', ' ', ' '}};
 
   char ch;
 
@@ -44,15 +44,19 @@ int main (void) {
   while ((ch = getc (fp)) != EOF) {
 
     if (ch == '\n') {
+
       level[i][j] = '\0';
       i++;
       j = 0;
+
     }
 
     level[i][j] = ch;
     j++;
 
   }
+
+  fclose (fp);
 
 
   int yo = 5;
@@ -62,31 +66,31 @@ int main (void) {
   Player.x = xo;
   Player.y = yo;
 
-  for (i = 0; i < LEN; i++) {
-    for (j = 0; j < WID; j++) {
-      putchar (level[i][j]);
-    }
-  }
 
+  long time = 0, a = 1;
 
-  struct player * pt;
 
   while (check == 1) {
 
     if (GetKeyState ('O') < 0) // ---> output
       check = 0;
 
-    COORD position = {0, 0};
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    SetConsoleCursorPosition(hConsole, position);
+    cursorStart ();
 
     move (&Player, level);
 
-    for (i = 0; i < LEN; i++)
+    for (i = 0; i < LEN ; i++)
       for (j = 0; j < WID; j++)
         putchar (level[i][j]);
 
-    Sleep (30);
+    Sleep (FPS);
+    time += FPS;
+
+    if (time >= 1000 * a) {
+      Timer (&level[21][8], &level[21][9]);
+      a++;
+    }
+
 
   }
 
@@ -151,15 +155,39 @@ void destroyPlayer (struct player * Player, char level [LEN][WID]) {
 
 }
 
-void Timer (void) {
+void cursorStart (void) {
 
-  i = TIME;
+  COORD position = {0, 0};
+  HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+  SetConsoleCursorPosition(hConsole, position);
 
-  while (i > 0) {
+}
 
-    printf ("%d\r", i);
-    Sleep (1000);
-    i--;
+int iTime = 5, jTime = 9;
+
+void Timer (char * numClock1, char * numClock2) {
+
+
+  if (iTime >= 0) {
+
+    if (jTime >= 0) {
+
+      * numClock1 = iTime + '0';
+      * numClock2 = jTime + '0';
+
+      if (iTime == 0)
+        * numClock1 = ' ';
+
+      jTime--;
+
+    }
+
+    if (jTime < 0) {
+
+      jTime = 9;
+      iTime --;
+
+    }
 
   }
 
