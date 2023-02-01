@@ -1,6 +1,6 @@
 # C-GAME
 
-It's the console-game, which was written in C. I wrote this game near 3 hours. May, I'll think something else...
+It's the console-game, which was written in C. I wrote this game near 2 hours. May, I'll think something else...
 It's 1st version this game. 
 
 
